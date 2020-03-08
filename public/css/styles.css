@@ -1,0 +1,30 @@
+body {
+  background-color: #e8ecef;
+  font-family: 'Open Sans', sans-serif;
+}
+
+/* home */
+.logo {
+  width: 30%;
+}
+
+.home-title {
+  font-family: 'Coming Soon', cursive;
+}
+
+.centered {
+  text-align: center;
+}
+
+.attribution {
+  text-align: right;
+}
+
+/* create, test */
+.test-title {
+  font-family: 'Open Sans Condensed', sans-serif;
+}
+
+.test-question {
+  font-size: 2.5rem;
+}

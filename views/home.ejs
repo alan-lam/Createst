@@ -1,0 +1,35 @@
+<%- include('partials/header') %>
+
+<div class="jumbotron centered">
+  <div class="container">
+    <img class="logo img-fluid" src="images/test.svg">
+    <h1 class="home-title display-3">Createst</h1>
+    <h3 class="lead">A Quizlet-like application with a public repository of tests.</h3>
+    <hr>
+    <div class="row">
+      <div class="col-md-6">
+        <p>Select a test below:</p>
+        <div class="list-group">
+          <form action="/test" method="post">
+            <% tests.forEach((test) => { %>
+              <button type="submit" class="list-group-item list-group-item-action" name="testTitle" value="<%= test.title %>"><%= test.title %></button>
+            <% }) %>
+          </form>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <p>Or create a new test:</p>
+        <form action="/create" method="post">
+          <div class="form-group">
+            <input class="form-control" type="text" name="testTitle" placeholder="Title" required>
+          </div>
+          <button class="btn btn-primary" type="submit">Create</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="attribution">Icon made by <a href="https://www.flaticon.com/authors/monkik" title="monkik">monkik</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>
+
+<%- include('partials/footer') %>

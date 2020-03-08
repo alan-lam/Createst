@@ -1,0 +1,18 @@
+<%- include('partials/header') %>
+
+<div class="container">
+  <h1 class="test-title"><%= testTitle %></h1>
+  <% testQuestions.forEach((testQuestion) => { %>
+    <div class="shadow p-3 mb-5 bg-white rounded">
+      <p class="test-question"><%= testQuestion.question %></p>
+    </div>
+    <div class="collapse" id="answer">
+      <p><%= testQuestion.answer %></p>
+    </div>
+    <div class="centered">
+      <a class="btn btn-primary toggle-text" data-toggle="collapse" href="#answer"><span>Show Answer</span><span class="hidden">Hide Answer</span></a>
+    </div>
+  <% }) %>
+</div>
+
+<%- include('partials/footer') %>
