@@ -25,6 +25,20 @@ body {
   font-family: 'Open Sans Condensed', sans-serif;
 }
 
+/* test */
 .test-question {
   font-size: 2.5rem;
+  padding: 0 10%;
+}
+
+.test-answer {
+  padding: 0 10%;
+}
+
+.carousel {
+  text-align: center;
+}
+
+.carousel-control-prev, .carousel-control-next {
+  filter: invert(100%);
 }

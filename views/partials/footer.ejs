@@ -5,6 +5,11 @@
       $('.toggle-text').click(function() {
         $(this).find('span').each(function() { $(this).toggle(); });
       });
+      
+      function createForm() {
+        const form = '<div class="form-group"><label>Question</label><textarea class="form-control" type="text" name="question" required></textarea><label>Answer</label><textarea class="form-control" name="answer" required></textarea></div>';
+        $('a').before(form);
+      }
     </script>
   </body>
 </html>

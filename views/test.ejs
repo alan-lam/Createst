@@ -1,18 +1,46 @@
 <%- include('partials/header') %>
 
-<div class="container">
-  <h1 class="test-title"><%= testTitle %></h1>
-  <% testQuestions.forEach((testQuestion) => { %>
-    <div class="shadow p-3 mb-5 bg-white rounded">
-      <p class="test-question"><%= testQuestion.question %></p>
+    <div class="container">
+      <h1 class="test-title"><%= testTitle %></h1>
+      <div id="questionCarousel" class="carousel slide" data-interval="false">
+        <div class="carousel-inner">
+          <% for (let i = 0; i < testQuestions.length; i++) { %>
+            <% if (i === 0) { %>
+              <div class="carousel-item active">
+                <div class="shadow p-3 mb-5 bg-white rounded">
+                  <p class="test-question"><%= testQuestions[i].question %></p>
+                  <div class="collapse" id="<%= 'id' + testQuestions[i]._id %>">
+                    <p class="test-answer"><%= testQuestions[i].answer %></p>
+                  </div>
+                  <div class="centered">
+                    <a class="btn btn-primary toggle-text" data-toggle="collapse" href="#<%= 'id' + testQuestions[i]._id %>"><span>Show Answer</span><span class="hidden">Hide Answer</span></a>
+                  </div>
+                </div>
+              </div>
+            <% } else { %>
+              <div class="carousel-item">
+                <div class="shadow p-3 mb-5 bg-white rounded">
+                  <p class="test-question"><%= testQuestions[i].question %></p>
+                  <div class="collapse" id="<%= 'id' + testQuestions[i]._id %>">
+                    <p class="test-answer"><%= testQuestions[i].answer %></p>
+                  </div>
+                  <div class="centered">
+                    <a class="btn btn-primary toggle-text" data-toggle="collapse" href="#<%= 'id' + testQuestions[i]._id %>"><span>Show Answer</span><span class="hidden">Hide Answer</span></a>
+                  </div>
+                </div>
+              </div>
+              <% } %>
+          <% } %>
+        </div>
+        <a class="carousel-control-prev" href="#questionCarousel" role="button" data-slide="prev">
+          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+          <span class="sr-only">Previous</span>
+        </a>
+        <a class="carousel-control-next" href="#questionCarousel" role="button" data-slide="next">
+          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+          <span class="sr-only">Next</span>
+        </a>
+      </div>
     </div>
-    <div class="collapse" id="answer">
-      <p><%= testQuestion.answer %></p>
-    </div>
-    <div class="centered">
-      <a class="btn btn-primary toggle-text" data-toggle="collapse" href="#answer"><span>Show Answer</span><span class="hidden">Hide Answer</span></a>
-    </div>
-  <% }) %>
-</div>
 
 <%- include('partials/footer') %>

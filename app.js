@@ -60,14 +60,30 @@ app.post('/test', function(req, res) {
 
 /* go to test after submitting on create page */
 app.post('/test/:testTitle', function(req, res) {
-  const question = new Question({
-    question: req.body.question,
-    answer: req.body.answer
-  });
-  Test.findOne({title: req.params.testTitle}, function(err, foundTest) {
-    foundTest.questions.push(question);
-    foundTest.save();
-  });
+  /* only one question/answer submitted */
+  if (typeof req.body.question === 'string') {
+    const question = new Question({
+      question: req.body.question,
+      answer: req.body.answer
+    });
+    Test.findOne({title: req.params.testTitle}, function(err, foundTest) {
+      foundTest.questions.push(question);
+      foundTest.save();
+    });
+  }
+  /* more than one question/answer submitted */
+  else {
+    for (let i = 0; i < req.body.question.length; i++) {
+      const question = new Question({
+        question: req.body.question[i],
+        answer: req.body.answer[i]
+      });
+      Test.findOne({title: req.params.testTitle}, function(err, foundTest) {
+        foundTest.questions.push(question);
+        foundTest.save();
+      });
+    }
+  }
   res.redirect('/test/' + req.params.testTitle);
 });
 

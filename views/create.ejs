@@ -7,9 +7,11 @@
           <label>Question</label>
           <textarea class="form-control" type="text" name="question" required></textarea>
           <label>Answer</label>
-          <textarea class="form-control" name="answer"></textarea required>
+          <textarea class="form-control" name="answer" required></textarea>
         </div>
-        <button class="btn btn-primary" type="submit" name="testTitle" value="<%= testTitle %>">Submit</button>
+        <a href="#" onclick="createForm();">+ Add Question</a>
+        <br><br>
+        <button class="btn btn-primary" type="submit" name="testTitle" value="<%= testTitle %>">Submit Test</button>
       </form>
     </div>
 
