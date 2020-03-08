@@ -30,14 +30,13 @@ const testSchema = new mongoose.Schema({
 
 const Test = mongoose.model('Test', testSchema);
 
-const defaultTest = new Test({
-  title: 'Default',
-  questions: [defaultQuestion]
-});
-
 app.get('/', function(req, res) {
-  Test.find({}, function(err, foundTests) {
+  Test.find(function(err, foundTests) {
     if (foundTests.length === 0) {
+      const defaultTest = new Test({
+        title: 'Default',
+        questions: [defaultQuestion]
+      });
       defaultTest.save();
       res.redirect('/');
     }
@@ -99,6 +98,145 @@ app.post('/create', function(req, res) {
   test.save();
   res.redirect('/create/' + test.title);
 });
+
+/* RESTful API */
+app.route('/tests')
+  .get(function(req, res) {
+    Test.find(function(err, foundTests) {
+      if (err) {
+        res.send(err);
+      }
+      else {
+        res.send(foundTests);
+      }
+    });
+  })
+  .post(function(req, res) {
+    Test.find({title: req.body.title}, function(err, foundTests) {
+      if (err) {
+        res.send(err);
+      }
+      else if (foundTests.length > 0) {
+        res.send('Test with that title already exists');
+      }
+      else {
+        const questions = [];
+        const submittedQuestions = JSON.parse(req.body.questions);
+        for (q in submittedQuestions) {
+          const question = new Question(submittedQuestions[q]);
+          questions.push(question);
+        }
+        const test = new Test({
+          title: req.body.title,
+          questions: questions
+        });
+        test.save(function(err) {
+          if (err) {
+            res.send(err);
+          }
+          else {
+            res.send('Successfully submitted test');
+          }
+        });
+      }
+    });
+  });
+
+app.route('/tests/:testTitle')
+  .get(function(req, res) {
+    Test.findOne({title: req.params.testTitle}, function(err, foundTest) {
+      if (err) {
+        res.send(err);
+      }
+      else {
+        if (foundTest) {
+          console.log(foundTest);
+          const questions = {};
+          for (let i = 0; i < foundTest.questions.length; i++) {
+            questions['q'+(i+1)] = {
+              question: foundTest.questions[i].question,
+              answer: foundTest.questions[i].answer
+            };
+          }
+          const test = JSON.stringify({
+            title: foundTest.title,
+            questions: questions
+          });
+          res.send(test);
+        }
+        else {
+          res.send('No test with that title found');
+        }
+      }
+    });
+  })
+  .put(function(req, res) {
+    if (req.body.title === undefined) {
+      res.send('No title specified');
+    }
+    else {
+      const questions = [];
+      const submittedQuestions = JSON.parse(req.body.questions);
+      for (q in submittedQuestions) {
+        const question = new Question(submittedQuestions[q]);
+        questions.push(question);
+      }
+      Test.updateOne(
+        {title: req.params.testTitle},
+        {title: req.body.title, questions: questions},
+        function(err) {
+          if (err) {
+            res.send(err);
+          }
+          else {
+            res.send('Successfully updated test');
+          }
+        }
+      );
+    }
+  })
+  .patch(function(req, res) {
+    let correctProperties = false;
+    if (req.body.hasOwnProperty('title')) {
+      correctProperties = true;
+      Test.updateOne(
+        {title: req.params.testTitle},
+        {$set: {title: req.body.title}},
+        function(err) {
+          if (err) {
+            res.send(err);
+          }
+          else {
+            res.send('Successfully updated test title');
+          }
+        }
+      );
+    }
+    if (req.body.hasOwnProperty('questions')) {
+      correctProperties = true;
+      const questions = [];
+      const submittedQuestions = JSON.parse(req.body.questions);
+      for (q in submittedQuestions) {
+        const question = new Question(submittedQuestions[q]);
+        questions.push(question);
+      }
+      Test.updateOne(
+        {title: req.params.testTitle},
+        {$set: {questions: questions}},
+        function(err) {
+          if (err) {
+            res.send(err);
+          }
+          else {
+            res.send('Successfully updated test questions');
+          }
+        }
+      );
+    }
+    if (!correctProperties) {
+      res.send('Incorrect Keys. Should be "title" and/or "questions"');
+    }
+  });
 
 app.listen(3000, function() {
   console.log('Server started on port 3000');
