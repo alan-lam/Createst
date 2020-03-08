@@ -91,12 +91,22 @@ app.get('/create/:testTitle', function(req, res) {
 });
 
 app.post('/create', function(req, res) {
-  const test = new Test({
-    title: req.body.testTitle,
-    questions: []
+  Test.find({title: req.body.testTitle}, function(err, foundTests) {
+    if (err) {
+      res.send(err);
+    }
+    else if (foundTests.length > 0) {
+      res.send('Test with that title already exists');
+    }
+    else {
+      const test = new Test({
+        title: req.body.testTitle,
+        questions: []
+      });
+      test.save();
+      res.redirect('/create/' + test.title);
+    }
   });
-  test.save();
-  res.redirect('/create/' + test.title);
 });
 
 /* RESTful API */
