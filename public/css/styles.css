@@ -25,6 +25,10 @@ body {
   font-family: 'Open Sans Condensed', sans-serif;
 }
 
+.padding-top {
+  padding-top: 50px;
+}
+
 /* test */
 .test-question {
   font-size: 2.5rem;

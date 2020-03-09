@@ -9,8 +9,8 @@ app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static('public'));
 
-// mongoose.connect('mongodb+srv://admin-ntrllog:adminntrllog@cluster0-0lb8n.mongodb.net/testsDB', {useNewUrlParser: true, useUnifiedTopology: true});
-mongoose.connect('mongodb://localhost:27017/testsDB', {useNewUrlParser: true, useUnifiedTopology: true});
+mongoose.connect('mongodb+srv://admin-ntrllog:adminntrllog@cluster0-0lb8n.mongodb.net/testsDB', {useNewUrlParser: true, useUnifiedTopology: true});
+// mongoose.connect('mongodb://localhost:27017/testsDB', {useNewUrlParser: true, useUnifiedTopology: true});
 
 const questionSchema = new mongoose.Schema({
   question: String,
@@ -108,6 +108,10 @@ app.post('/create', function(req, res) {
       res.redirect('/create/' + req.body.testTitle);
     }
   });
+});
+
+app.post('/back', function(req, res) {
+  res.redirect('/');
 });
 
 /* RESTful API */
