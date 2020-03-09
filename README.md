@@ -27,6 +27,8 @@ Returns an array of Test objects:
 
 GET: `https://creatests.herokuapp.com/tests/<testTitle>`
 
+Example: `https://creatests.herokuapp.com/tests/Default`
+
 Returns a single Test object:
 
 ```
@@ -61,11 +63,13 @@ POST: `https://creatests.herokuapp.com/tests`
 
 The format for the `questions` parameter can be copied and pasted from the result of a GET request for a *single* test.
 
-### Update a Test
+### Update a Single Test
 
-PUT: `https://creatests.herokuapp.com/tests` (if changing both `title` and `questions`)
+PUT: `https://creatests.herokuapp.com/tests/<testTitle>` (if changing both `title` and `questions`)
 
-PATCH: `https://creatests.herokuapp.com/tests` (if changing `title` or `questions` or both)
+PATCH: `https://creatests.herokuapp.com/tests/<testTitle>` (if changing `title` or `questions` or both)
+
+Example: `https://creatests.herokuapp.com/tests/Test`
 
 **Parameters**
 | name      | description                | example                                                                     |
