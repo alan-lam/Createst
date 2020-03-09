@@ -9,7 +9,8 @@ app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static('public'));
 
-mongoose.connect('mongodb+srv://admin-ntrllog:adminntrllog@cluster0-0lb8n.mongodb.net/testsDB', {useNewUrlParser: true, useUnifiedTopology: true});
+// mongoose.connect('mongodb+srv://admin-ntrllog:adminntrllog@cluster0-0lb8n.mongodb.net/testsDB', {useNewUrlParser: true, useUnifiedTopology: true});
+mongoose.connect('mongodb://localhost:27017/testsDB', {useNewUrlParser: true, useUnifiedTopology: true});
 
 const questionSchema = new mongoose.Schema({
   question: String,
@@ -57,7 +58,7 @@ app.post('/test', function(req, res) {
   res.redirect('/test/' + req.body.testTitle);
 });
 
-/* go to test after submitting on create page */
+/* create test from create page */
 app.post('/test/:testTitle', function(req, res) {
   /* only one question/answer submitted */
   if (typeof req.body.question === 'string') {
@@ -65,23 +66,27 @@ app.post('/test/:testTitle', function(req, res) {
       question: req.body.question,
       answer: req.body.answer
     });
-    Test.findOne({title: req.params.testTitle}, function(err, foundTest) {
-      foundTest.questions.push(question);
-      foundTest.save();
+    const test = new Test({
+      title: req.body.testTitle,
+      questions: [question]
     });
+    test.save();
   }
   /* more than one question/answer submitted */
   else {
+    const questions = [];
     for (let i = 0; i < req.body.question.length; i++) {
       const question = new Question({
         question: req.body.question[i],
         answer: req.body.answer[i]
       });
-      Test.findOne({title: req.params.testTitle}, function(err, foundTest) {
-        foundTest.questions.push(question);
-        foundTest.save();
-      });
+      questions.push(question);
     }
+    const test = new Test({
+      title: req.params.testTitle,
+      questions: questions
+    });
+    test.save();
   }
   res.redirect('/test/' + req.params.testTitle);
 });
@@ -90,6 +95,7 @@ app.get('/create/:testTitle', function(req, res) {
   res.render('create', {testTitle: req.params.testTitle});
 });
 
+/* go to create test page from home page */
 app.post('/create', function(req, res) {
   Test.find({title: req.body.testTitle}, function(err, foundTests) {
     if (err) {
@@ -99,12 +105,7 @@ app.post('/create', function(req, res) {
       res.send('Test with that title already exists');
     }
     else {
-      const test = new Test({
-        title: req.body.testTitle,
-        questions: []
-      });
-      test.save();
-      res.redirect('/create/' + test.title);
+      res.redirect('/create/' + req.body.testTitle);
     }
   });
 });
@@ -233,9 +234,12 @@ app.route('/tests/:testTitle')
       Test.updateOne(
         {title: req.params.testTitle},
         {$set: {questions: questions}},
-        function(err) {
+        function(err, writeOpResult) {
           if (err) {
             res.send(err);
+          }
+          else if (writeOpResult.nModified === 0) {
+            res.send('No test with that title exists');
           }
           else {
             res.send('Successfully updated test questions');
