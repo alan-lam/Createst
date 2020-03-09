@@ -1,4 +1,4 @@
-# Createst
+# Creatests
 A Quizlet-like web application that allows users to create flashcards
 
 https://creatests.herokuapp.com/
