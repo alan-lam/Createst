@@ -19,8 +19,8 @@ const questionSchema = new mongoose.Schema({
 const Question = mongoose.model('Question', questionSchema);
 
 const defaultQuestion = new Question({
-  question: 'What is Createst?',
-  answer: "Createst is a web application that allows users to submit questions and answers to create a test. It's essentially a flashcard maker."
+  question: 'What is Creatests?',
+  answer: "Creatests is a web application that allows users to submit questions and answers to create a test. It's essentially a flashcard maker."
 });
 
 const testSchema = new mongoose.Schema({
