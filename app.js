@@ -97,7 +97,8 @@ app.get('/create/:testTitle', function(req, res) {
 
 /* go to create test page from home page */
 app.post('/create', function(req, res) {
-  Test.find({title: req.body.testTitle}, function(err, foundTests) {
+  const title = req.body.testTitle.replace(/\s+/g, '-');
+  Test.find({title: title}, function(err, foundTests) {
     if (err) {
       res.send(err);
     }
@@ -105,7 +106,7 @@ app.post('/create', function(req, res) {
       res.send('Test with that title already exists');
     }
     else {
-      res.redirect('/create/' + req.body.testTitle);
+      res.redirect('/create/' + title);
     }
   });
 });
@@ -127,7 +128,8 @@ app.route('/tests')
     });
   })
   .post(function(req, res) {
-    Test.find({title: req.body.title}, function(err, foundTests) {
+    const title = req.body.title.replace(/\s+/g, '-');
+    Test.find({title: title}, function(err, foundTests) {
       if (err) {
         res.send(err);
       }
@@ -196,9 +198,10 @@ app.route('/tests/:testTitle')
         const question = new Question(submittedQuestions[q]);
         questions.push(question);
       }
+      const title = req.body.title.replace(/\s+/g, '-');
       Test.updateOne(
         {title: req.params.testTitle},
-        {title: req.body.title, questions: questions},
+        {title: title, questions: questions},
         function(err) {
           if (err) {
             res.send(err);
@@ -214,9 +217,10 @@ app.route('/tests/:testTitle')
     let correctProperties = false;
     if (req.body.hasOwnProperty('title')) {
       correctProperties = true;
+      const title = req.body.title.replace(/\s+/g, '-');
       Test.updateOne(
         {title: req.params.testTitle},
-        {$set: {title: req.body.title}},
+        {$set: {title: title}},
         function(err) {
           if (err) {
             res.send(err);
