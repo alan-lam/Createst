@@ -3,6 +3,11 @@ A web application that allows users to create flashcards
 
 https://creatests.herokuapp.com/
 
+## Screenshots
+![](pictures/creatests.png)
+![](pictures/test.png)
+![](pictures/create.png)
+
 ## API
 
 ### Get All Tests
