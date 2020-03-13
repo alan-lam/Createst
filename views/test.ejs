@@ -4,7 +4,13 @@
       <form action="/back" method="post">
         <button type="submit"><i class="fas fa-long-arrow-alt-left fa-2x"></i></button>
       </form>
-      <h1 class="test-title"><%= testTitle %></h1>
+      <div class="flex-space-between">
+        <h1 class="test-title"><%= testTitle %></h1>
+        <form action="/edit/<%= testTitle %>" method="post">
+          <input type="password" name="password" placeholder="Enter password to edit">
+          <button type="submit">Edit Test</button>
+        </form>
+      </div>
       <div id="questionCarousel" class="carousel slide" data-interval="false">
         <div class="carousel-inner">
           <% for (let i = 0; i < testQuestions.length; i++) { %>

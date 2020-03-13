@@ -8,12 +8,13 @@
       <form action="/test/<%= testTitle %>" method="post">
         <div class="form-group">
           <label>Question</label>
-          <textarea class="form-control" type="text" name="question" required></textarea>
+          <textarea class="form-control" type="text" name="question"></textarea>
           <label>Answer</label>
-          <textarea class="form-control" name="answer" required></textarea>
+          <textarea class="form-control" name="answer"></textarea>
         </div>
         <a href="#" onclick="createForm();">+ Add Question</a>
         <br><br>
+        <input type="password" placeholder="Password (optional)" name="password">
         <button class="btn btn-primary" type="submit" name="testTitle" value="<%= testTitle %>">Submit Test</button>
       </form>
     </div>

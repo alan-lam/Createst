@@ -9,8 +9,8 @@ app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static('public'));
 
-mongoose.connect('mongodb+srv://admin-ntrllog:adminntrllog@cluster0-0lb8n.mongodb.net/testsDB', {useNewUrlParser: true, useUnifiedTopology: true});
-// mongoose.connect('mongodb://localhost:27017/testsDB', {useNewUrlParser: true, useUnifiedTopology: true});
+mongoose.connect('mongodb+srv://admin-ntrllog:adminntrllog@cluster0-0lb8n.mongodb.net/testsDB', {useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false});
+// mongoose.connect('mongodb://localhost:27017/testsDB', {useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false});
 
 const questionSchema = new mongoose.Schema({
   question: String,
@@ -26,7 +26,8 @@ const defaultQuestion = new Question({
 
 const testSchema = new mongoose.Schema({
   title: String,
-  questions: [questionSchema]
+  questions: [questionSchema],
+  password: String
 });
 
 const Test = mongoose.model('Test', testSchema);
@@ -36,7 +37,8 @@ app.get('/', function(req, res) {
     if (foundTests.length === 0) {
       const defaultTest = new Test({
         title: 'Default',
-        questions: [defaultQuestion]
+        questions: [defaultQuestion],
+        password: ''
       });
       defaultTest.save();
       res.redirect('/');
@@ -49,7 +51,17 @@ app.get('/', function(req, res) {
 
 app.get('/test/:testTitle', function(req, res) {
   Test.findOne({title: req.params.testTitle}, function(err, foundTest) {
-    res.render('test', {testTitle: foundTest.title, testQuestions: foundTest.questions});
+    if (err) {
+      res.send(err);
+    }
+    else {
+      if (!foundTest) {
+        res.send('No test found with title ' + req.params.testTitle);
+      }
+      else {
+        res.render('test', {testTitle: foundTest.title, testQuestions: foundTest.questions});
+      }
+    }
   });
 });
 
@@ -58,7 +70,7 @@ app.post('/test', function(req, res) {
   res.redirect('/test/' + req.body.testTitle);
 });
 
-/* create test from create page */
+/* create test from create page or edit test from test page */
 app.post('/test/:testTitle', function(req, res) {
   /* only one question/answer submitted */
   if (typeof req.body.question === 'string') {
@@ -66,27 +78,40 @@ app.post('/test/:testTitle', function(req, res) {
       question: req.body.question,
       answer: req.body.answer
     });
-    const test = new Test({
-      title: req.body.testTitle,
-      questions: [question]
-    });
-    test.save();
+    Test.findOneAndUpdate(
+      {title: req.body.testTitle},
+      {questions: [question], password: req.body.password},
+      {upsert: true},
+      function(err) {
+        if (err) {
+          res.send(err);
+        }
+      }
+    );
   }
   /* more than one question/answer submitted */
   else {
     const questions = [];
     for (let i = 0; i < req.body.question.length; i++) {
+      if (req.body.question[i] === '') {
+        continue;
+      }
       const question = new Question({
         question: req.body.question[i],
         answer: req.body.answer[i]
       });
       questions.push(question);
     }
-    const test = new Test({
-      title: req.params.testTitle,
-      questions: questions
-    });
-    test.save();
+    Test.findOneAndUpdate(
+      {title: req.body.testTitle},
+      {questions: questions, password: req.body.password},
+      {upsert: true},
+      function(err) {
+        if (err) {
+          res.send(err);
+        }
+      }
+    );
   }
   res.redirect('/test/' + req.params.testTitle);
 });
@@ -113,6 +138,26 @@ app.post('/create', function(req, res) {
 
 app.post('/back', function(req, res) {
   res.redirect('/');
+});
+
+app.get('/edit/:testTitle', function(req, res) {
+  Test.findOne({title: req.params.testTitle}, function(err, foundTest) {
+    if (err) {
+      res.send(err);
+    }
+    else {
+      if (req.query.pw === foundTest.password) {
+        res.render('edit', {testTitle: foundTest.title, questions: foundTest.questions, password: foundTest.password});
+      }
+      else {
+        res.send('Wrong password');
+      }
+    }
+  });
+});
+
+app.post('/edit/:testTitle', function(req, res) {
+  res.redirect('/edit/' + req.params.testTitle + '/?pw=' + req.body.password);
 });
 
 /* RESTful API */

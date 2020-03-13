@@ -30,6 +30,11 @@ body {
 }
 
 /* test */
+.flex-space-between {
+  display: flex;
+  justify-content: space-between;
+}
+
 .test-question {
   font-size: 2.5rem;
   padding: 0 10%;
