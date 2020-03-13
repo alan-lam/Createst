@@ -86,3 +86,4 @@ The format for the `questions` parameter can be copied and pasted from the resul
 
 ## Resources
 https://stackoverflow.com/questions/46249541/change-arrow-colors-in-bootstraps-carousel
+https://stackoverflow.com/questions/19035373/how-do-i-redirect-in-expressjs-while-passing-some-context
